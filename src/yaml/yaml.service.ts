@@ -29,7 +29,7 @@ export class YamlService {
 
   private inner = (value: any, ind: number, isArr = false) => {
     if (Array.isArray(value)) {
-      value.forEach((el, index) => {
+      value.forEach((el) => {
         this.inner(el, ind, true);
       });
     } else if (typeof value === 'object') {
@@ -49,26 +49,14 @@ export class YamlService {
           this.mainValue += `\n${this.createSpace(ind)}${
             firstKeyIObjectInsideArr === key ? `- ${key}` : `  ${key}`
           }:`;
+          this.inner(value, typeof value === 'object' ? ++ind : ind);
         } else {
           this.mainValue += '\n' + this.createSpace(ind) + key + ':';
+          this.inner(value, ind);
         }
-        this.inner(value, ind);
       });
     } else {
       this.inner(json, ind);
     }
-  };
-
-  private toYaml = (json: Object) => {
-    // Object.entries(json).forEach(([key, value]) => {
-    //   this.mainValue += '\n' + key + ':';
-    //   if (typeof value === 'object') {
-    //     this.indent++;
-    //     Object.entries(json).forEach(([innerKey, innerValue]) => {
-    //
-    //     }
-    //   })
-    //   this.indent = 0;
-    // });
   };
 }

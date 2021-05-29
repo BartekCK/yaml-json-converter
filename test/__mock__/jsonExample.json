@@ -15,7 +15,11 @@
             "GlossSeeAlso": ["GML", "XML", {
               "name": "Bartek",
               "surname": "Bartosz",
-              "surname2": "Bartłomiej"
+              "surname2": "Bartłomiej",
+              "test": {
+                "klucz": "WielkiKlucz",
+                "klucz2": "OgromnyKlucz"
+              }
             }]
           },
           "GlossSee": "markup"
