@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConvertDto } from './dto/convert.dto';
+import { equals } from 'ramda';
 
 @Injectable()
 export class YamlService {
@@ -17,7 +18,7 @@ export class YamlService {
     return '';
   }
 
-  createSpace = (num: number): string => {
+  private createSpace = (num: number): string => {
     let space = '';
     for (let i = 0; i < num; i++) {
       space += '  ';
@@ -25,20 +26,12 @@ export class YamlService {
     return space;
   };
 
-  createDashForArr = (val: number): string => {
-    let dash = '';
-    for (let i = 0; i < val; i++) {
-      dash += '- ';
-    }
-    return dash;
-  };
-
   private inner = (
     value: any,
     ind: number,
     isArr = false,
     arrLevel = 0,
-    fistArrEl?: any,
+    parent?: any[],
   ) => {
     if (Array.isArray(value)) {
       value.forEach((el) => {
@@ -47,18 +40,22 @@ export class YamlService {
           ind,
           true,
           Array.isArray(el) ? ++arrLevel : arrLevel,
-          fistArrEl ? fistArrEl : Array.isArray(el) ? el[0] : undefined,
+          value,
         );
       });
     } else if (typeof value === 'object') {
-      this.isObject(value, isArr ? ind : ++ind, isArr, arrLevel);
+      this.isObject(value, isArr ? ind : ++ind, isArr);
     } else {
       if (isArr) {
+        const fistArrEl = parent[0];
         this.mainValue += `\n${this.createSpace(
-          ind + (fistArrEl === value ? 0 : arrLevel),
-        )}${
-          fistArrEl === value ? this.createDashForArr(arrLevel) : ''
-        }- ${value}`;
+          ind +
+            (fistArrEl === value
+              ? arrLevel > 0
+                ? arrLevel - 1
+                : 0
+              : arrLevel),
+        )}${equals(fistArrEl, value) && arrLevel > 0 ? '- ' : ''}- ${value}`;
       } else {
         this.mainValue += ` ${value}`;
       }
@@ -66,10 +63,9 @@ export class YamlService {
   };
 
   private isObject = (
-    json: Object,
+    json: Record<string, any>,
     ind: number,
     isArr = false,
-    arrLevel = 0,
   ) => {
     if (typeof json === 'object') {
       Object.entries(json).forEach(([key, value]) => {

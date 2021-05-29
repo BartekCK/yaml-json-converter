@@ -22,7 +22,10 @@
                 "test": {
                   "klucz": "WielkiKlucz",
                   "klucz2": "OgromnyKlucz",
-                  "arr": [1, 2, 3, [10, 20, 30]]
+                  "arr": [1, 2, 3, [10, 20, 30, [100, 200, 300, [1000, 2000]]], {
+                    "teacher": "Marek",
+                    "mark": 2
+                  }]
                 }
               },
               ["a", "b", "c"]
