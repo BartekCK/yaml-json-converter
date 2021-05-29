@@ -19,6 +19,7 @@ describe('AppController (e2e)', () => {
     const result: string = yamlService.convertToYaml({
       yamlOrJson: JSON.stringify(JSON_EXAMPLE),
     });
+    console.log(result);
     expect(result).toEqual(yamlInString);
   });
 
@@ -27,5 +28,11 @@ describe('AppController (e2e)', () => {
     expect(() => yamlService.convertToYaml({ yamlOrJson: mock })).toThrow(
       BadRequestException,
     );
+  });
+
+  it('should create json', () => {
+    // const mock = 'glossary:\n' + '  title: example glossary\n';
+    const mock = yamlInString;
+    yamlService.convertToJson({ yamlOrJson: mock });
   });
 });

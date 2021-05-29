@@ -40,7 +40,7 @@ export class JsonToYamlConv {
         const fistArrEl = parent[0];
         this.mainValue += `\n${this.createSpace(
           ind +
-            (fistArrEl === value
+            (equals(fistArrEl, value)
               ? arrLevel > 0
                 ? arrLevel - 1
                 : 0

@@ -14,7 +14,20 @@ export class YamlService {
     }
   }
 
+  private calculateInd = (value: string): number => {
+    let ind = 0;
+    while (value[ind] === ' ') {
+      ind++;
+    }
+    return ind;
+  };
+
   convertToJson(data: ConvertDto): string {
+    const { yamlOrJson } = data;
+    const arrOrLine: string[] = yamlOrJson.split('\n');
+    console.log(this.calculateInd(arrOrLine[0]));
+    console.log(arrOrLine[5]);
+
     return '';
   }
 }
