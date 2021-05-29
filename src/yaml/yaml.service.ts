@@ -1,10 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConvertDto } from './dto/convert.dto';
-import { json } from 'express';
 
 @Injectable()
 export class YamlService {
-  private indent = 0;
   private mainValue = '';
 
   convertToYaml(data: ConvertDto): string {
@@ -27,21 +25,52 @@ export class YamlService {
     return space;
   };
 
-  private inner = (value: any, ind: number, isArr = false) => {
+  createDashForArr = (val: number): string => {
+    let dash = '';
+    for (let i = 0; i < val; i++) {
+      dash += '- ';
+    }
+    return dash;
+  };
+
+  private inner = (
+    value: any,
+    ind: number,
+    isArr = false,
+    arrLevel = 0,
+    fistArrEl?: any,
+  ) => {
     if (Array.isArray(value)) {
       value.forEach((el) => {
-        this.inner(el, ind, true);
+        this.inner(
+          el,
+          ind,
+          true,
+          Array.isArray(el) ? ++arrLevel : arrLevel,
+          fistArrEl ? fistArrEl : Array.isArray(el) ? el[0] : undefined,
+        );
       });
     } else if (typeof value === 'object') {
-      this.isObject(value, isArr ? ind : ++ind, isArr);
+      this.isObject(value, isArr ? ind : ++ind, isArr, arrLevel);
     } else {
-      this.mainValue += isArr
-        ? `\n${this.createSpace(ind)}- ${value}`
-        : ` ${value}`;
+      if (isArr) {
+        this.mainValue += `\n${this.createSpace(
+          ind + (fistArrEl === value ? 0 : arrLevel),
+        )}${
+          fistArrEl === value ? this.createDashForArr(arrLevel) : ''
+        }- ${value}`;
+      } else {
+        this.mainValue += ` ${value}`;
+      }
     }
   };
 
-  private isObject = (json: Object, ind: number, isArr = false) => {
+  private isObject = (
+    json: Object,
+    ind: number,
+    isArr = false,
+    arrLevel = 0,
+  ) => {
     if (typeof json === 'object') {
       Object.entries(json).forEach(([key, value]) => {
         if (isArr) {
@@ -55,8 +84,6 @@ export class YamlService {
           this.inner(value, ind);
         }
       });
-    } else {
-      this.inner(json, ind);
     }
   };
 }

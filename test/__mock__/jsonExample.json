@@ -12,15 +12,21 @@
           "Abbrev": "ISO 8879:1986",
           "GlossDef": {
             "para": "A meta-markup language, used to create markup languages such as DocBook.",
-            "GlossSeeAlso": ["GML", "XML", {
-              "name": "Bartek",
-              "surname": "Bartosz",
-              "surname2": "Bartłomiej",
-              "test": {
-                "klucz": "WielkiKlucz",
-                "klucz2": "OgromnyKlucz"
-              }
-            }]
+            "GlossSeeAlso": [
+              "GML",
+              "XML",
+              {
+                "name": "Bartek",
+                "surname": "Bartosz",
+                "surname2": "Bartłomiej",
+                "test": {
+                  "klucz": "WielkiKlucz",
+                  "klucz2": "OgromnyKlucz",
+                  "arr": [1, 2, 3, [10, 20, 30]]
+                }
+              },
+              ["a", "b", "c"]
+            ]
           },
           "GlossSee": "markup"
         }
