@@ -5,6 +5,7 @@ import { YamlService } from './yaml.service';
 @Controller()
 export class YamlController {
   constructor(private readonly yamlService: YamlService) {}
+
   @Post('yaml')
   convertToYaml(@Body() data: ConvertDto) {
     return this.yamlService.convertToYaml(data);

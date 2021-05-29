@@ -1,24 +1,22 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { YamlService } from '../src/yaml/yaml.service';
+import * as JSON_EXAMPLE from './__mock__/jsonExample.json';
 
 describe('AppController (e2e)', () => {
-  let app: INestApplication;
+  let yamlService: YamlService;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [YamlService],
     }).compile();
 
-    app = moduleFixture.createNestApplication();
-    await app.init();
+    yamlService = moduleFixture.get<YamlService>(YamlService);
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+  it('should create yaml', () => {
+    const result: string = yamlService.convertToYaml({
+      yamlOrJson: JSON.stringify(JSON_EXAMPLE),
+    });
+    expect(result).toEqual('');
   });
 });
