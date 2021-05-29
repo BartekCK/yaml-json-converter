@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConvertDto } from './dto/convert.dto';
+import { json } from 'express';
 
 @Injectable()
 export class YamlService {
@@ -21,25 +22,34 @@ export class YamlService {
   createSpace = (num: number): string => {
     let space = '';
     for (let i = 0; i < num; i++) {
-      space += '   ';
+      space += '  ';
     }
     return space;
   };
 
-  private isObject = (json: Object, ind: number) => {
-    Object.entries(json).forEach(([key, value]) => {
-      this.mainValue += '\n' + this.createSpace(ind) + key + ':';
-      if (Array.isArray(value)) {
-        value.forEach((el, index) => {
-          console.log(el);
-          this.isObject(el, ind);
-        });
-      } else if (typeof value === 'object') {
-        this.isObject(value, ++ind);
-      } else {
-        this.mainValue += value;
-      }
-    });
+  private inner = (value: any, ind: number, isArr = false) => {
+    if (Array.isArray(value)) {
+      value.forEach((el, index) => {
+        this.inner(el, ind, true);
+      });
+    } else if (typeof value === 'object') {
+      this.isObject(value, ++ind, isArr);
+    } else {
+      this.mainValue += isArr
+        ? `\n${this.createSpace(ind)}- ${value}`
+        : ` ${value}`;
+    }
+  };
+
+  private isObject = (json: Object, ind: number, isArr = false) => {
+    if (typeof json === 'object') {
+      Object.entries(json).forEach(([key, value]) => {
+        this.mainValue += '\n' + this.createSpace(ind) + key + ':';
+        this.inner(value, ind);
+      });
+    } else {
+      this.inner(json, ind);
+    }
   };
 
   private toYaml = (json: Object) => {
