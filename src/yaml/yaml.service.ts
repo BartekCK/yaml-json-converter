@@ -33,7 +33,7 @@ export class YamlService {
         this.inner(el, ind, true);
       });
     } else if (typeof value === 'object') {
-      this.isObject(value, ++ind, isArr);
+      this.isObject(value, isArr ? ind : ++ind, isArr);
     } else {
       this.mainValue += isArr
         ? `\n${this.createSpace(ind)}- ${value}`
@@ -44,7 +44,14 @@ export class YamlService {
   private isObject = (json: Object, ind: number, isArr = false) => {
     if (typeof json === 'object') {
       Object.entries(json).forEach(([key, value]) => {
-        this.mainValue += '\n' + this.createSpace(ind) + key + ':';
+        if (isArr) {
+          const firstKeyIObjectInsideArr: string = Object.keys(json)[0];
+          this.mainValue += `\n${this.createSpace(ind)}${
+            firstKeyIObjectInsideArr === key ? `- ${key}` : `  ${key}`
+          }:`;
+        } else {
+          this.mainValue += '\n' + this.createSpace(ind) + key + ':';
+        }
         this.inner(value, ind);
       });
     } else {
