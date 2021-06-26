@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConvertDto } from './dto/convert.dto';
 import { JsonToYamlConv } from './converters/JsonToYamlConv';
+import { load } from 'js-yaml';
 
 @Injectable()
 export class YamlService {
@@ -14,20 +15,12 @@ export class YamlService {
     }
   }
 
-  private calculateInd = (value: string): number => {
-    let ind = 0;
-    while (value[ind] === ' ') {
-      ind++;
-    }
-    return ind;
-  };
-
-  convertToJson(data: ConvertDto): string {
+  convertToJson(data: ConvertDto) {
     const { yamlOrJson } = data;
-    const arrOrLine: string[] = yamlOrJson.split('\n');
-    console.log(this.calculateInd(arrOrLine[0]));
-    console.log(arrOrLine[5]);
-
-    return '';
+    try {
+      return load(yamlOrJson);
+    } catch (e) {
+      throw new BadRequestException('String should be a yaml');
+    }
   }
 }

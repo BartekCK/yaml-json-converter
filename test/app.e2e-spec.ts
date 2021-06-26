@@ -25,14 +25,11 @@ describe('AppController (e2e)', () => {
 
   it('should throw error because of incorrect json', () => {
     const mock = JSON.stringify(JSON_EXAMPLE).slice(100);
-    expect(() => yamlService.convertToYaml({ yamlOrJson: mock })).toThrow(
-      BadRequestException,
-    );
+    expect(() => yamlService.convertToYaml({ yamlOrJson: mock })).toThrow(BadRequestException);
   });
 
   it('should create json', () => {
-    // const mock = 'glossary:\n' + '  title: example glossary\n';
     const mock = yamlInString;
-    yamlService.convertToJson({ yamlOrJson: mock });
+    const result = yamlService.convertToJson({ yamlOrJson: mock });
   });
 });
