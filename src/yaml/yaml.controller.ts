@@ -1,20 +1,28 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { ConvertDto } from './dto/convert.dto';
+import { Controller, Post } from '@nestjs/common';
+import * as JSON_EXAMPLE from '../core/data/jsonExample.json';
 import { YamlService } from './yaml.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiProduces, ApiTags } from '@nestjs/swagger';
+import { PlainBody } from '../core/decorator/plain-body.decorator';
+import { yamlInString } from '../core/data/yamlExmaple';
 
 @ApiTags('converters')
 @Controller()
 export class YamlController {
   constructor(private readonly yamlService: YamlService) {}
 
+  @ApiProduces('text/html')
+  @ApiConsumes('text/html')
+  @ApiBody({ type: String, required: true, schema: { example: JSON_EXAMPLE } })
   @Post('json/converter/yaml')
-  convertToYaml(@Body() data: ConvertDto) {
-    return this.yamlService.convertToYaml(data);
+  async convertToYaml(@PlainBody() body: string) {
+    return this.yamlService.convertToYaml(body);
   }
 
+  @ApiProduces('text/html')
+  @ApiConsumes('text/html')
+  @ApiBody({ type: String, required: true, schema: { example: yamlInString } })
   @Post('yaml/converter/json')
-  convertToJson(@Body() data: ConvertDto) {
-    return this.yamlService.convertToJson(data);
+  convertToJson(@PlainBody() body: string) {
+    return this.yamlService.convertToJson(body);
   }
 }
