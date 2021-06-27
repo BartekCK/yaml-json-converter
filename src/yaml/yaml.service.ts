@@ -15,7 +15,7 @@ export class YamlService {
 
   convertToJson(data: string) {
     try {
-      return JSON.stringify(load(data));
+      return load(data);
     } catch (e) {
       throw new BadRequestException('String should be a yaml');
     }
