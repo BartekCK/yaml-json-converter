@@ -1,4 +1,4 @@
-import { Controller, Post } from '@nestjs/common';
+import { Controller, Header, Post } from '@nestjs/common';
 import * as JSON_EXAMPLE from '../core/data/jsonExample.json';
 import { YamlService } from './yaml.service';
 import { ApiBody, ApiConsumes, ApiProduces, ApiTags } from '@nestjs/swagger';
@@ -18,8 +18,9 @@ export class YamlController {
     return this.yamlService.convertToYaml(body);
   }
 
-  @ApiProduces('text/html')
+  @ApiProduces('application/json')
   @ApiConsumes('text/html')
+  @Header('content-type', 'application/json')
   @ApiBody({ type: String, required: true, schema: { example: yamlInString } })
   @Post('yaml/converter/json')
   convertToJson(@PlainBody() body: string) {
